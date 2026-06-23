@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Calendar,
@@ -13,6 +12,7 @@ import Logo from "@/components/Logo";
 import StatusBadge from "@/components/StatusBadge";
 import { createTranslator } from "@/i18n";
 import { formatDate, getCarnetStatus } from "@/lib/carnet";
+import { getHomeUrl } from "@/lib/home-url";
 import { getLocale } from "@/lib/locale";
 import { prisma } from "@/lib/prisma";
 
@@ -39,6 +39,7 @@ export default async function PublicCarnetPage({ params }: PageProps) {
   }
 
   const status = getCarnetStatus(carnet.expiryDate);
+  const homeUrl = getHomeUrl();
 
   const fields = [
     { icon: FileText, label: t("form.carnetNumber"), value: carnet.carnetNumber, large: true },
@@ -105,10 +106,10 @@ export default async function PublicCarnetPage({ params }: PageProps) {
                 : t("carnet.expiredMessage")}
             </div>
 
-            <Link href="/" className="btn-primary w-full py-3">
+            <a href={homeUrl} className="btn-primary w-full py-3">
               <Home className="h-4 w-4" />
               {t("carnet.backToHome")}
-            </Link>
+            </a>
           </div>
         </div>
       </div>
