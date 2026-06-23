@@ -63,7 +63,7 @@ export default function QRPrintPreview({
               className="print-qr"
               unoptimized
             />
-            <p className="print-carnet-number mt-1 min-w-[105px] whitespace-nowrap text-center text-[9px] font-bold leading-tight text-black">
+            <p className="print-carnet-number mt-1 min-w-[105px] whitespace-nowrap text-center text-[12px] font-bold leading-tight text-black">
               {carnetNumber}
             </p>
           </div>

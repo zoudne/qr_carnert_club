@@ -36,6 +36,16 @@ body {
   @apply focus:border-brand focus:ring-2 focus:ring-brand-ring;
 }
 
+.search-field {
+  @apply flex items-center gap-3 rounded-xl border border-zinc-300 bg-white px-4 py-3 shadow-sm transition-all;
+  @apply focus-within:border-brand focus-within:ring-2 focus-within:ring-brand-ring;
+}
+
+.search-field input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors;
   @apply hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50;
@@ -98,7 +108,7 @@ body {
   }
 
   .print-carnet-number {
-    font-size: 10px !important;
+    font-size: 14px !important;
     color: #000 !important;
     visibility: visible !important;
   }

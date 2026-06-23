@@ -16,6 +16,6 @@ export async function generateQRDataUrl(url: string) {
 export const A4_WIDTH_PX = 794;
 export const A4_HEIGHT_PX = 1123;
 export const QR_SIZE_PX = 105;
-export const QR_TOP_PX = 225;
+export const QR_TOP_PX = 245;
 export const QR_LEFT_PX = 640;
 export const QR_RIGHT_PX = 49;

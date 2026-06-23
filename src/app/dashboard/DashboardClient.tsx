@@ -75,14 +75,14 @@ export default function DashboardClient({ isAdmin }: DashboardClientProps) {
         </Link>
       </div>
 
-      <div className="relative mb-6">
-        <Search className="pointer-events-none absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
+      <div className="search-field mb-6">
+        <Search className="h-5 w-5 shrink-0 text-zinc-400" aria-hidden />
         <input
           type="search"
           placeholder={t("dashboard.searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="input-field ps-12 shadow-sm"
+          className="min-w-0 flex-1 border-0 bg-transparent text-sm text-zinc-900 outline-none placeholder:text-zinc-400"
         />
       </div>
 

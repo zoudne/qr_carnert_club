@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import {
   Calendar,
   Car,
+  CarFront,
   FileText,
   Hash,
   Home,
@@ -31,6 +32,7 @@ export default async function PublicCarnetPage({ params }: PageProps) {
       ownerName: true,
       plateNumber: true,
       vin: true,
+      carType: true,
     },
   });
 
@@ -45,6 +47,7 @@ export default async function PublicCarnetPage({ params }: PageProps) {
     { icon: FileText, label: t("form.carnetNumber"), value: carnet.carnetNumber, large: true },
     { icon: Calendar, label: t("form.expiryDate"), value: formatDate(carnet.expiryDate, locale) },
     { icon: User, label: t("form.ownerName"), value: carnet.ownerName },
+    { icon: CarFront, label: t("form.carType"), value: carnet.carType },
     { icon: Car, label: t("form.plateNumber"), value: carnet.plateNumber },
     { icon: Hash, label: t("form.vin"), value: carnet.vin, mono: true },
   ];

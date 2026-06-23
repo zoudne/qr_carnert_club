@@ -81,6 +81,17 @@ export interface Messages {
     addButton: string;
     success: string;
     noUsers: string;
+    actions: string;
+    edit: string;
+    editUser: string;
+    saveChanges: string;
+    cancelEdit: string;
+    newPassword: string;
+    newPasswordHint: string;
+    updateSuccess: string;
+    delete: string;
+    confirmDelete: string;
+    deleteSuccess: string;
   };
   form: {
     carnetNumber: string;
@@ -150,5 +161,12 @@ export interface Messages {
     duplicateUsername: string;
     fetchUsers: string;
     createUser: string;
+    updateUser: string;
+    deleteUser: string;
+    userNotFound: string;
+    cannotDeleteSelf: string;
+    cannotDeleteAdmin: string;
+    cannotDeleteLastAdmin: string;
+    cannotDemoteLastAdmin: string;
   };
 }

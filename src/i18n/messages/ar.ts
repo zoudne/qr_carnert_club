@@ -84,6 +84,17 @@ const ar: Messages = {
     addButton: "إضافة المستخدم",
     success: "تم إضافة المستخدم بنجاح",
     noUsers: "لا يوجد مستخدمون",
+    actions: "الإجراءات",
+    edit: "تعديل",
+    editUser: "تعديل المستخدم",
+    saveChanges: "حفظ التعديلات",
+    cancelEdit: "إلغاء",
+    newPassword: "كلمة مرور جديدة",
+    newPasswordHint: "اتركها فارغة إذا لم ترد تغييرها",
+    updateSuccess: "تم تحديث المستخدم بنجاح",
+    delete: "حذف",
+    confirmDelete: "تأكيد الحذف",
+    deleteSuccess: "تم حذف المستخدم بنجاح",
   },
   form: {
     carnetNumber: "رقم دفتر التربتك",
@@ -110,7 +121,7 @@ const ar: Messages = {
     createdBy: "أُدخل بواسطة",
   },
   status: {
-    active: "فعال",
+    active: "ساري",
     expired: "منتهي",
   },
   qr: {
@@ -153,6 +164,13 @@ const ar: Messages = {
     duplicateUsername: "اسم المستخدم مسجل مسبقاً",
     fetchUsers: "فشل في جلب المستخدمين",
     createUser: "فشل في إضافة المستخدم",
+    updateUser: "فشل في تحديث المستخدم",
+    deleteUser: "فشل في حذف المستخدم",
+    userNotFound: "المستخدم غير موجود",
+    cannotDeleteSelf: "لا يمكنك حذف حسابك الخاص",
+    cannotDeleteAdmin: "لا يمكن حذف المدير",
+    cannotDeleteLastAdmin: "لا يمكن حذف آخر مدير في النظام",
+    cannotDemoteLastAdmin: "لا يمكن تغيير صلاحية آخر مدير في النظام",
   },
 };
 
