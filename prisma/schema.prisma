@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Carnet {
+  id           Int      @id @default(autoincrement())
+  carnetNumber String   @unique @map("carnet_number")
+  expiryDate   DateTime @map("expiry_date")
+  ownerName    String   @map("owner_name")
+  plateNumber  String   @map("plate_number")
+  vin          String
+  carType      String   @map("car_type")
+  qrToken      String   @unique @default(uuid()) @map("qr_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("carnets")
+}
