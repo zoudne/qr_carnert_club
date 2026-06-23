@@ -9,6 +9,8 @@ export interface Messages {
     addCarnet: string;
     welcome: string;
     logout: string;
+    settings: string;
+    users: string;
   };
   language: {
     label: string;
@@ -52,6 +54,33 @@ export interface Messages {
     expiredMessage: string;
     backToHome: string;
     noCarnets: string;
+    createdBy: string;
+    editLocked: string;
+    editExpiresAt: string;
+  };
+  settings: {
+    title: string;
+    subtitle: string;
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+    submit: string;
+    success: string;
+  };
+  users: {
+    title: string;
+    subtitle: string;
+    addUser: string;
+    username: string;
+    password: string;
+    role: string;
+    carnetsCount: string;
+    createdAt: string;
+    admin: string;
+    userRole: string;
+    addButton: string;
+    success: string;
+    noUsers: string;
   };
   form: {
     carnetNumber: string;
@@ -75,6 +104,7 @@ export interface Messages {
     delete: string;
     confirmDelete: string;
     cancel: string;
+    createdBy: string;
   };
   status: {
     active: string;
@@ -111,5 +141,14 @@ export interface Messages {
     unauthorized: string;
     saveFailed: string;
     updateFailed: string;
+    forbidden: string;
+    editWindowExpired: string;
+    passwordMismatch: string;
+    passwordTooShort: string;
+    invalidCurrentPassword: string;
+    passwordChangeFailed: string;
+    duplicateUsername: string;
+    fetchUsers: string;
+    createUser: string;
   };
 }

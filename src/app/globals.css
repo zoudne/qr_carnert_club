@@ -96,4 +96,10 @@ body {
     width: 105px !important;
     height: 105px !important;
   }
+
+  .print-carnet-number {
+    font-size: 10px !important;
+    color: #000 !important;
+    visibility: visible !important;
+  }
 }

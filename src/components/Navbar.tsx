@@ -6,7 +6,9 @@ import {
   BookOpen,
   LogOut,
   PlusCircle,
+  Settings,
   User,
+  Users,
 } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Logo from "./Logo";
@@ -14,9 +16,10 @@ import { useTranslation } from "./LocaleProvider";
 
 interface NavbarProps {
   username?: string;
+  isAdmin?: boolean;
 }
 
-export default function Navbar({ username }: NavbarProps) {
+export default function Navbar({ username, isAdmin }: NavbarProps) {
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -29,7 +32,7 @@ export default function Navbar({ username }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 shadow-sm backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 lg:gap-6">
           <Logo href="/dashboard" size="sm" />
           <nav className="hidden items-center gap-1 md:flex">
             <Link
@@ -46,10 +49,27 @@ export default function Navbar({ username }: NavbarProps) {
               <PlusCircle className="h-4 w-4" />
               {t("nav.addCarnet")}
             </Link>
+            {isAdmin && (
+              <Link
+                href="/dashboard/users"
+                className="btn-ghost text-zinc-600 hover:bg-brand-light hover:text-brand"
+              >
+                <Users className="h-4 w-4" />
+                {t("nav.users")}
+              </Link>
+            )}
           </nav>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher />
+          <Link
+            href="/dashboard/settings"
+            className="btn-ghost text-zinc-600 hover:bg-brand-light hover:text-brand"
+            title={t("nav.settings")}
+          >
+            <Settings className="h-4 w-4" />
+            <span className="hidden lg:inline">{t("nav.settings")}</span>
+          </Link>
           {username && (
             <span className="hidden items-center gap-1.5 text-sm text-zinc-500 sm:flex">
               <User className="h-4 w-4" />

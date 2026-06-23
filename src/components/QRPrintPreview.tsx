@@ -48,12 +48,11 @@ export default function QRPrintPreview({
           }}
         >
           <div
-            className="absolute"
+            className="absolute flex flex-col items-center"
             style={{
               top: QR_TOP_PX,
               left: QR_LEFT_PX,
               width: QR_SIZE_PX,
-              height: QR_SIZE_PX,
             }}
           >
             <Image
@@ -64,6 +63,9 @@ export default function QRPrintPreview({
               className="print-qr"
               unoptimized
             />
+            <p className="print-carnet-number mt-1 min-w-[105px] whitespace-nowrap text-center text-[9px] font-bold leading-tight text-black">
+              {carnetNumber}
+            </p>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, Loader2, Printer, Trash2, X } from "lucide-react";
+import { Eye, Loader2, Printer, Trash2, User, X } from "lucide-react";
 import { formatDate, getCarnetStatus } from "@/lib/carnet";
 import { useTranslation } from "./LocaleProvider";
 import StatusBadge from "./StatusBadge";
@@ -15,14 +15,21 @@ interface Carnet {
   plateNumber: string;
   vin: string;
   carType: string;
+  createdAt: string;
+  createdByUsername: string | null;
 }
 
 interface CarnetTableProps {
   carnets: Carnet[];
   onDelete: (id: number) => Promise<void>;
+  isAdmin: boolean;
 }
 
-export default function CarnetTable({ carnets, onDelete }: CarnetTableProps) {
+export default function CarnetTable({
+  carnets,
+  onDelete,
+  isAdmin,
+}: CarnetTableProps) {
   const { t, locale } = useTranslation();
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
@@ -48,7 +55,7 @@ export default function CarnetTable({ carnets, onDelete }: CarnetTableProps) {
   return (
     <div className="card overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] text-start text-sm">
+        <table className="w-full min-w-[1000px] text-start text-sm">
           <thead className="bg-zinc-50 text-zinc-600">
             <tr>
               <th className="px-4 py-3.5 font-semibold">{t("table.carnetNumber")}</th>
@@ -56,6 +63,7 @@ export default function CarnetTable({ carnets, onDelete }: CarnetTableProps) {
               <th className="px-4 py-3.5 font-semibold">{t("table.plateNumber")}</th>
               <th className="px-4 py-3.5 font-semibold">{t("table.vin")}</th>
               <th className="px-4 py-3.5 font-semibold">{t("table.expiryDate")}</th>
+              <th className="px-4 py-3.5 font-semibold">{t("table.createdBy")}</th>
               <th className="px-4 py-3.5 font-semibold">{t("table.status")}</th>
               <th className="px-4 py-3.5 font-semibold">{t("table.actions")}</th>
             </tr>
@@ -71,6 +79,12 @@ export default function CarnetTable({ carnets, onDelete }: CarnetTableProps) {
                 <td className="px-4 py-3.5 font-mono text-xs">{carnet.vin}</td>
                 <td className="px-4 py-3.5">
                   {formatDate(carnet.expiryDate, locale)}
+                </td>
+                <td className="px-4 py-3.5">
+                  <span className="inline-flex items-center gap-1 text-zinc-600">
+                    <User className="h-3.5 w-3.5" />
+                    {carnet.createdByUsername ?? "—"}
+                  </span>
                 </td>
                 <td className="px-4 py-3.5">
                   <StatusBadge status={getCarnetStatus(carnet.expiryDate)} />
@@ -91,37 +105,38 @@ export default function CarnetTable({ carnets, onDelete }: CarnetTableProps) {
                       <Printer className="h-3.5 w-3.5" />
                       {t("table.printQr")}
                     </Link>
-                    {confirmId === carnet.id ? (
-                      <>
+                    {isAdmin &&
+                      (confirmId === carnet.id ? (
+                        <>
+                          <button
+                            onClick={() => handleDelete(carnet.id)}
+                            disabled={deletingId === carnet.id}
+                            className="btn-ghost bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                          >
+                            {deletingId === carnet.id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-3.5 w-3.5" />
+                            )}
+                            {t("table.confirmDelete")}
+                          </button>
+                          <button
+                            onClick={() => setConfirmId(null)}
+                            className="btn-ghost bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                            {t("table.cancel")}
+                          </button>
+                        </>
+                      ) : (
                         <button
-                          onClick={() => handleDelete(carnet.id)}
-                          disabled={deletingId === carnet.id}
-                          className="btn-ghost bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                          onClick={() => setConfirmId(carnet.id)}
+                          className="btn-ghost bg-red-50 text-red-700 hover:bg-red-100"
                         >
-                          {deletingId === carnet.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-3.5 w-3.5" />
-                          )}
-                          {t("table.confirmDelete")}
+                          <Trash2 className="h-3.5 w-3.5" />
+                          {t("table.delete")}
                         </button>
-                        <button
-                          onClick={() => setConfirmId(null)}
-                          className="btn-ghost bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                          {t("table.cancel")}
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmId(carnet.id)}
-                        className="btn-ghost bg-red-50 text-red-700 hover:bg-red-100"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        {t("table.delete")}
-                      </button>
-                    )}
+                      ))}
                   </div>
                 </td>
               </tr>

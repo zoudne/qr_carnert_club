@@ -14,7 +14,10 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isProtected =
-    pathname.startsWith("/dashboard") || pathname.startsWith("/api/carnets");
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/api/carnets") ||
+    pathname.startsWith("/api/users") ||
+    pathname.startsWith("/api/auth/change-password");
 
   if (!isProtected) {
     return NextResponse.next();
@@ -40,5 +43,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/carnets/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/api/carnets/:path*",
+    "/api/users/:path*",
+    "/api/auth/change-password",
+  ],
 };

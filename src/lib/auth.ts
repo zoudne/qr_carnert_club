@@ -1,6 +1,9 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
+import type { UserRole } from "@/lib/permissions";
+import { isAdmin } from "@/lib/permissions";
+import { prisma } from "@/lib/prisma";
 
 const COOKIE_NAME = "carnet_session";
 
@@ -20,8 +23,12 @@ export async function verifyPassword(password: string, hash: string) {
   return bcrypt.compare(password, hash);
 }
 
-export async function createSession(userId: number, username: string) {
-  const token = await new SignJWT({ userId, username })
+export async function createSession(
+  userId: number,
+  username: string,
+  role: UserRole
+) {
+  const token = await new SignJWT({ userId, username, role })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -52,6 +59,7 @@ export async function getSession() {
     return {
       userId: payload.userId as number,
       username: payload.username as string,
+      role: (payload.role as UserRole) ?? "USER",
     };
   } catch {
     return null;
@@ -64,4 +72,22 @@ export async function requireAuth() {
     throw new Error("UNAUTHORIZED");
   }
   return session;
+}
+
+export async function requireAdmin() {
+  const session = await requireAuth();
+  if (!isAdmin(session.role)) {
+    throw new Error("FORBIDDEN");
+  }
+  return session;
+}
+
+export async function getAuthUser() {
+  const session = await getSession();
+  if (!session) return null;
+
+  return prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { id: true, username: true, role: true, createdAt: true },
+  });
 }

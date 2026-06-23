@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
+import { getSession } from "@/lib/auth";
+import { carnetInclude, serializeCarnet } from "@/lib/carnet-serialize";
+import { canDeleteCarnet, canEditCarnet } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { generateQRDataUrl, getPublicUrl } from "@/lib/qr";
+import type { UserRole } from "@/lib/permissions";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ errorKey: "errors.unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
     const carnet = await prisma.carnet.findUnique({
       where: { id: parseInt(id, 10) },
+      include: carnetInclude,
     });
 
     if (!carnet) {
@@ -20,8 +30,15 @@ export async function GET(_request: Request, context: RouteContext) {
 
     const publicUrl = getPublicUrl(carnet.qrToken);
     const qrDataUrl = await generateQRDataUrl(publicUrl);
+    const serialized = serializeCarnet(carnet);
 
-    return NextResponse.json({ carnet, qrDataUrl, publicUrl });
+    return NextResponse.json({
+      carnet: serialized,
+      qrDataUrl,
+      publicUrl,
+      canEdit: canEditCarnet(session.role as UserRole, carnet.createdAt),
+      canDelete: canDeleteCarnet(session.role as UserRole),
+    });
   } catch {
     return NextResponse.json(
       { errorKey: "errors.fetchCarnets" },
@@ -32,6 +49,11 @@ export async function GET(_request: Request, context: RouteContext) {
 
 export async function PUT(request: Request, context: RouteContext) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ errorKey: "errors.unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
     const body = await request.json();
     const { carnetNumber, expiryDate, ownerName, plateNumber, vin, carType } =
@@ -44,6 +66,13 @@ export async function PUT(request: Request, context: RouteContext) {
       return NextResponse.json(
         { errorKey: "errors.notFound" },
         { status: 404 }
+      );
+    }
+
+    if (!canEditCarnet(session.role as UserRole, existing.createdAt)) {
+      return NextResponse.json(
+        { errorKey: "errors.editWindowExpired" },
+        { status: 403 }
       );
     }
 
@@ -69,12 +98,19 @@ export async function PUT(request: Request, context: RouteContext) {
         vin,
         carType,
       },
+      include: carnetInclude,
     });
 
     const publicUrl = getPublicUrl(carnet.qrToken);
     const qrDataUrl = await generateQRDataUrl(publicUrl);
 
-    return NextResponse.json({ carnet, qrDataUrl, publicUrl });
+    return NextResponse.json({
+      carnet: serializeCarnet(carnet),
+      qrDataUrl,
+      publicUrl,
+      canEdit: canEditCarnet(session.role as UserRole, carnet.createdAt),
+      canDelete: canDeleteCarnet(session.role as UserRole),
+    });
   } catch {
     return NextResponse.json(
       { errorKey: "errors.updateCarnet" },
@@ -85,6 +121,15 @@ export async function PUT(request: Request, context: RouteContext) {
 
 export async function DELETE(_request: Request, context: RouteContext) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ errorKey: "errors.unauthorized" }, { status: 401 });
+    }
+
+    if (!canDeleteCarnet(session.role as UserRole)) {
+      return NextResponse.json({ errorKey: "errors.forbidden" }, { status: 403 });
+    }
+
     const { id } = await context.params;
 
     await prisma.carnet.delete({

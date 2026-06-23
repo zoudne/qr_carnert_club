@@ -6,22 +6,32 @@ import {
   ArrowLeft,
   Pencil,
   Printer,
+  User,
 } from "lucide-react";
 import CarnetForm from "@/components/CarnetForm";
 import { useTranslation } from "@/components/LocaleProvider";
 import QRDisplay from "@/components/QRDisplay";
 import StatusBadge from "@/components/StatusBadge";
 import { CarnetFormData, formatDate, getCarnetStatus } from "@/lib/carnet";
+import { getEditDeadline } from "@/lib/permissions";
 import { translateApiError } from "@/lib/translate-error";
 
 interface CarnetDetailClientProps {
-  carnet: CarnetFormData & { id: number };
+  carnet: CarnetFormData & {
+    id: number;
+    createdAt: string;
+    createdByUsername: string | null;
+  };
   qrDataUrl: string;
+  canEdit: boolean;
+  isAdmin: boolean;
 }
 
 export default function CarnetDetailClient({
   carnet: initialCarnet,
   qrDataUrl: initialQr,
+  canEdit: initialCanEdit,
+  isAdmin,
 }: CarnetDetailClientProps) {
   const { t, locale } = useTranslation();
   const [editing, setEditing] = useState(false);
@@ -29,6 +39,7 @@ export default function CarnetDetailClient({
   const [error, setError] = useState("");
   const [carnet, setCarnet] = useState(initialCarnet);
   const [qrDataUrl, setQrDataUrl] = useState(initialQr);
+  const [canEdit, setCanEdit] = useState(initialCanEdit);
 
   async function handleUpdate(data: CarnetFormData) {
     setLoading(true);
@@ -55,8 +66,11 @@ export default function CarnetDetailClient({
         plateNumber: result.carnet.plateNumber,
         vin: result.carnet.vin,
         carType: result.carnet.carType,
+        createdAt: result.carnet.createdAt,
+        createdByUsername: result.carnet.createdByUsername,
       });
       setQrDataUrl(result.qrDataUrl);
+      setCanEdit(result.canEdit);
       setEditing(false);
     } catch {
       setError(t("errors.connectionError"));
@@ -64,6 +78,8 @@ export default function CarnetDetailClient({
       setLoading(false);
     }
   }
+
+  const editDeadline = getEditDeadline(carnet.createdAt);
 
   return (
     <div>
@@ -75,6 +91,12 @@ export default function CarnetDetailClient({
           <p className="mt-1 font-mono text-sm text-zinc-500">
             {carnet.carnetNumber}
           </p>
+          {carnet.createdByUsername && (
+            <p className="mt-1 flex items-center gap-1.5 text-sm text-zinc-500">
+              <User className="h-4 w-4" />
+              {t("carnet.createdBy")}: {carnet.createdByUsername}
+            </p>
+          )}
         </div>
         <StatusBadge status={getCarnetStatus(carnet.expiryDate)} large />
       </div>
@@ -91,13 +113,27 @@ export default function CarnetDetailClient({
           <Printer className="h-4 w-4" />
           {t("carnet.printQr")}
         </Link>
-        {!editing && (
+        {canEdit && !editing && (
           <button onClick={() => setEditing(true)} className="btn-outline">
             <Pencil className="h-4 w-4" />
             {t("carnet.editData")}
           </button>
         )}
       </div>
+
+      {!canEdit && !isAdmin && (
+        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          {t("carnet.editLocked")}
+        </div>
+      )}
+
+      {canEdit && !isAdmin && (
+        <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+          {t("carnet.editExpiresAt", {
+            date: formatDate(editDeadline, locale),
+          })}
+        </div>
+      )}
 
       {error && (
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">

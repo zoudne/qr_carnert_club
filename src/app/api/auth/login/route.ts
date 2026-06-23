@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createSession, verifyPassword } from "@/lib/auth";
+import type { UserRole } from "@/lib/permissions";
 
 export async function POST(request: Request) {
   try {
@@ -21,9 +22,13 @@ export async function POST(request: Request) {
       );
     }
 
-    await createSession(user.id, user.username);
+    await createSession(user.id, user.username, user.role as UserRole);
 
-    return NextResponse.json({ success: true, username: user.username });
+    return NextResponse.json({
+      success: true,
+      username: user.username,
+      role: user.role,
+    });
   } catch {
     return NextResponse.json(
       { errorKey: "errors.loginFailed" },

@@ -32,10 +32,11 @@ const fields: {
   labelKey: "form.carnetNumber" | "form.expiryDate" | "form.ownerName" | "form.plateNumber" | "form.vin" | "form.carType";
   icon: typeof FileText;
   type?: string;
+  fullWidth?: boolean;
 }[] = [
   { name: "carnetNumber", labelKey: "form.carnetNumber", icon: FileText },
   { name: "expiryDate", labelKey: "form.expiryDate", icon: Calendar, type: "date" },
-  { name: "ownerName", labelKey: "form.ownerName", icon: User },
+  { name: "ownerName", labelKey: "form.ownerName", icon: User, fullWidth: true },
   { name: "plateNumber", labelKey: "form.plateNumber", icon: Hash },
   { name: "vin", labelKey: "form.vin", icon: Hash },
   { name: "carType", labelKey: "form.carType", icon: Car },
@@ -66,8 +67,8 @@ export default function CarnetForm({
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
-      {fields.map(({ name, labelKey, icon: Icon, type }) => (
-        <div key={name}>
+      {fields.map(({ name, labelKey, icon: Icon, type, fullWidth }) => (
+        <div key={name} className={fullWidth ? "sm:col-span-2" : undefined}>
           <label className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-700">
             <Icon className="h-4 w-4 text-brand" />
             {t(labelKey)}

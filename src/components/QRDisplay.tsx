@@ -26,15 +26,20 @@ export default function QRDisplay({
 
   return (
     <div className="card flex flex-col items-center gap-4 p-6">
-      <div className="rounded-2xl border-2 border-dashed border-brand-ring bg-brand-light/40 p-4">
-        <Image
-          src={qrDataUrl}
-          alt={t("qr.alt", { number: carnetNumber })}
-          width={200}
-          height={200}
-          className="rounded-lg"
-          unoptimized
-        />
+      <div className="flex flex-col items-center gap-2">
+        <div className="rounded-2xl border-2 border-dashed border-brand-ring bg-brand-light/40 p-4">
+          <Image
+            src={qrDataUrl}
+            alt={t("qr.alt", { number: carnetNumber })}
+            width={200}
+            height={200}
+            className="rounded-lg"
+            unoptimized
+          />
+        </div>
+        <p className="text-center text-lg font-bold tracking-wide text-zinc-900">
+          {carnetNumber}
+        </p>
       </div>
       {showActions && (
         <button onClick={handleDownload} className="btn-primary">

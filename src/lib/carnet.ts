@@ -17,6 +17,7 @@ export function formatDate(date: Date | string, locale: Locale = "ar") {
       year: "numeric",
       month: "long",
       day: "numeric",
+      calendar: "gregory",
     }
   );
 }

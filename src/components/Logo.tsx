@@ -4,48 +4,35 @@ import Link from "next/link";
 interface LogoProps {
   href?: string;
   size?: "sm" | "md" | "lg";
-  showBackground?: boolean;
 }
 
 const sizes = {
-  sm: { width: 72, height: 32, className: "h-7 w-auto" },
-  md: { width: 96, height: 42, className: "h-9 w-auto" },
-  lg: { width: 140, height: 60, className: "h-14 w-auto" },
+  sm: { width: 220, height: 48, className: "h-10 w-auto max-w-[200px]" },
+  md: { width: 280, height: 60, className: "h-12 w-auto max-w-[260px]" },
+  lg: { width: 360, height: 78, className: "h-16 w-auto max-w-[340px]" },
 };
 
-export default function Logo({
-  href,
-  size = "md",
-  showBackground = true,
-}: LogoProps) {
+export default function Logo({ href, size = "md" }: LogoProps) {
   const { width, height, className } = sizes[size];
 
   const image = (
-    <div
-      className={
-        showBackground
-          ? "inline-flex items-center justify-center rounded-xl bg-black px-4 py-2 shadow-md"
-          : "inline-flex items-center justify-center"
-      }
-    >
-      <Image
-        src="/logo.png"
-        alt="K Club T"
-        width={width}
-        height={height}
-        className={className}
-        priority
-      />
-    </div>
+    <Image
+      src="/logo.png"
+      alt="Kuwait International Driving Permit & Carnet Club"
+      width={width}
+      height={height}
+      className={className}
+      priority
+    />
   );
 
   if (href) {
     return (
-      <Link href={href} className="transition-opacity hover:opacity-90">
+      <Link href={href} className="inline-flex transition-opacity hover:opacity-90">
         {image}
       </Link>
     );
   }
 
-  return image;
+  return <div className="inline-flex">{image}</div>;
 }

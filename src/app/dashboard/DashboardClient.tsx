@@ -14,9 +14,15 @@ interface Carnet {
   plateNumber: string;
   vin: string;
   carType: string;
+  createdAt: string;
+  createdByUsername: string | null;
 }
 
-export default function DashboardClient() {
+interface DashboardClientProps {
+  isAdmin: boolean;
+}
+
+export default function DashboardClient({ isAdmin }: DashboardClientProps) {
   const { t } = useTranslation();
   const [carnets, setCarnets] = useState<Carnet[]>([]);
   const [search, setSearch] = useState("");
@@ -86,7 +92,11 @@ export default function DashboardClient() {
           {t("dashboard.loading")}
         </div>
       ) : (
-        <CarnetTable carnets={carnets} onDelete={handleDelete} />
+        <CarnetTable
+          carnets={carnets}
+          onDelete={handleDelete}
+          isAdmin={isAdmin}
+        />
       )}
     </div>
   );

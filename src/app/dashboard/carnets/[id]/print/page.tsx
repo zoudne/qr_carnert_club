@@ -30,7 +30,7 @@ export default async function PrintCarnetPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-brand-light/20">
-      <Navbar username={session?.username} />
+      <Navbar username={session?.username} isAdmin={session?.role === "ADMIN"} />
       <main className="mx-auto max-w-4xl px-4 py-8">
         <div className="page-header">
           <div>
