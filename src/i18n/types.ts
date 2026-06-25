@@ -101,6 +101,7 @@ export interface Messages {
     vin: string;
     carType: string;
     saving: string;
+    expiryDateHint: string;
   };
   table: {
     carnetNumber: string;
@@ -121,6 +122,11 @@ export interface Messages {
     active: string;
     expired: string;
   };
+  date: {
+    day: string;
+    month: string;
+    year: string;
+  };
   qr: {
     download: string;
     alt: string;
@@ -138,6 +144,7 @@ export interface Messages {
   };
   errors: {
     requiredFields: string;
+    invalidExpiryDate: string;
     duplicateCarnet: string;
     fetchCarnets: string;
     createCarnet: string;

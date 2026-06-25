@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-react";
 import CarnetForm from "@/components/CarnetForm";
+import DateDisplay from "@/components/DateDisplay";
 import { useTranslation } from "@/components/LocaleProvider";
 import QRDisplay from "@/components/QRDisplay";
 import StatusBadge from "@/components/StatusBadge";
@@ -141,6 +142,15 @@ export default function CarnetDetailClient({
         </div>
       )}
 
+      {!editing && (
+        <div className="card mb-6 p-6">
+          <p className="text-sm text-zinc-500">{t("table.expiryDate")}</p>
+          <div className="mt-3">
+            <DateDisplay date={carnet.expiryDate} />
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="card p-6">
           {editing ? (
@@ -164,12 +174,6 @@ export default function CarnetDetailClient({
               <div className="rounded-xl bg-zinc-50 p-4">
                 <dt className="text-sm text-zinc-500">{t("table.carnetNumber")}</dt>
                 <dd className="mt-1 font-semibold">{carnet.carnetNumber}</dd>
-              </div>
-              <div className="rounded-xl bg-zinc-50 p-4">
-                <dt className="text-sm text-zinc-500">{t("table.expiryDate")}</dt>
-                <dd className="mt-1 font-semibold">
-                  {formatDate(carnet.expiryDate, locale)}
-                </dd>
               </div>
               <div className="rounded-xl bg-zinc-50 p-4">
                 <dt className="text-sm text-zinc-500">{t("form.ownerName")}</dt>

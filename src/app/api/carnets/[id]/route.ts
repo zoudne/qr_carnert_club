@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { carnetInclude, serializeCarnet } from "@/lib/carnet-serialize";
+import { isValidExpiryDate, parseExpiryDate } from "@/lib/carnet";
 import { canDeleteCarnet, canEditCarnet } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { generateQRDataUrl, getPublicUrl } from "@/lib/qr";
@@ -88,11 +89,20 @@ export async function PUT(request: Request, context: RouteContext) {
       }
     }
 
+    if (!isValidExpiryDate(expiryDate)) {
+      return NextResponse.json(
+        { errorKey: "errors.invalidExpiryDate" },
+        { status: 400 }
+      );
+    }
+
+    const parsedExpiryDate = parseExpiryDate(expiryDate)!;
+
     const carnet = await prisma.carnet.update({
       where: { id: parseInt(id, 10) },
       data: {
         carnetNumber,
-        expiryDate: new Date(expiryDate),
+        expiryDate: parsedExpiryDate,
         ownerName,
         plateNumber,
         vin,

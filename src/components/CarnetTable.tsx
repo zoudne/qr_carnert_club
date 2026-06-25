@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Eye, Loader2, Printer, Trash2, User, X } from "lucide-react";
-import { formatDate, getCarnetStatus } from "@/lib/carnet";
+import DateDisplay from "@/components/DateDisplay";
+import { getCarnetStatus } from "@/lib/carnet";
 import { useTranslation } from "./LocaleProvider";
 import StatusBadge from "./StatusBadge";
 
@@ -30,7 +31,7 @@ export default function CarnetTable({
   onDelete,
   isAdmin,
 }: CarnetTableProps) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
 
@@ -78,7 +79,7 @@ export default function CarnetTable({
                 <td className="px-4 py-3.5">{carnet.plateNumber}</td>
                 <td className="px-4 py-3.5 font-mono text-xs">{carnet.vin}</td>
                 <td className="px-4 py-3.5">
-                  {formatDate(carnet.expiryDate, locale)}
+                  <DateDisplay date={carnet.expiryDate} compact />
                 </td>
                 <td className="px-4 py-3.5">
                   <span className="inline-flex items-center gap-1 text-zinc-600">

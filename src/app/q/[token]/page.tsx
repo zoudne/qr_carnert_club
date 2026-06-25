@@ -8,11 +8,12 @@ import {
   Home,
   User,
 } from "lucide-react";
+import DateDisplay from "@/components/DateDisplay";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Logo from "@/components/Logo";
 import StatusBadge from "@/components/StatusBadge";
 import { createTranslator } from "@/i18n";
-import { formatDate, getCarnetStatus } from "@/lib/carnet";
+import { getCarnetStatus } from "@/lib/carnet";
 import { getHomeUrl } from "@/lib/home-url";
 import { getLocale } from "@/lib/locale";
 import { prisma } from "@/lib/prisma";
@@ -43,9 +44,16 @@ export default async function PublicCarnetPage({ params }: PageProps) {
   const status = getCarnetStatus(carnet.expiryDate);
   const homeUrl = getHomeUrl();
 
-  const fields = [
+  const fields: {
+    icon: typeof FileText;
+    label: string;
+    value?: string;
+    date?: Date;
+    large?: boolean;
+    mono?: boolean;
+  }[] = [
     { icon: FileText, label: t("form.carnetNumber"), value: carnet.carnetNumber, large: true },
-    { icon: Calendar, label: t("form.expiryDate"), value: formatDate(carnet.expiryDate, locale) },
+    { icon: Calendar, label: t("form.expiryDate"), date: carnet.expiryDate },
     { icon: User, label: t("form.ownerName"), value: carnet.ownerName },
     { icon: CarFront, label: t("form.carType"), value: carnet.carType },
     { icon: Car, label: t("form.plateNumber"), value: carnet.plateNumber },
@@ -80,7 +88,7 @@ export default async function PublicCarnetPage({ params }: PageProps) {
             </h2>
 
             <dl className="space-y-3">
-              {fields.map(({ icon: Icon, label, value, large, mono }) => (
+              {fields.map(({ icon: Icon, label, value, date, large, mono }) => (
                 <div key={label} className="rounded-xl bg-zinc-50 p-4">
                   <dt className="flex items-center gap-2 text-sm text-zinc-500">
                     <Icon className="h-4 w-4 text-brand" />
@@ -91,7 +99,7 @@ export default async function PublicCarnetPage({ params }: PageProps) {
                       large ? "text-lg font-bold" : ""
                     } ${mono ? "font-mono" : ""}`}
                   >
-                    {value}
+                    {date ? <DateDisplay date={date} /> : value}
                   </dd>
                 </div>
               ))}

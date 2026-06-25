@@ -1,6 +1,9 @@
 "use client";
 
-import { CarnetFormData } from "@/lib/carnet";
+import {
+  CarnetFormData,
+  isValidExpiryDate,
+} from "@/lib/carnet";
 import {
   Calendar,
   Car,
@@ -9,6 +12,8 @@ import {
   Loader2,
   User,
 } from "lucide-react";
+import { useState } from "react";
+import ExpiryDateInput from "./ExpiryDateInput";
 import { useTranslation } from "./LocaleProvider";
 
 interface CarnetFormProps {
@@ -28,17 +33,20 @@ const emptyForm: CarnetFormData = {
 };
 
 const fields: {
-  name: keyof CarnetFormData;
-  labelKey: "form.carnetNumber" | "form.expiryDate" | "form.ownerName" | "form.plateNumber" | "form.vin" | "form.carType";
+  name: Exclude<keyof CarnetFormData, "expiryDate">;
+  labelKey:
+    | "form.carnetNumber"
+    | "form.ownerName"
+    | "form.plateNumber"
+    | "form.vin"
+    | "form.carType";
   icon: typeof FileText;
-  type?: string;
   fullWidth?: boolean;
 }[] = [
   { name: "carnetNumber", labelKey: "form.carnetNumber", icon: FileText },
-  { name: "expiryDate", labelKey: "form.expiryDate", icon: Calendar, type: "date" },
   { name: "ownerName", labelKey: "form.ownerName", icon: User, fullWidth: true },
   { name: "plateNumber", labelKey: "form.plateNumber", icon: Hash },
-  { name: "vin", labelKey: "form.vin", icon: Hash },
+  { name: "vin", labelKey: "form.vin", icon: Hash, fullWidth: true },
   { name: "carType", labelKey: "form.carType", icon: Car },
 ];
 
@@ -49,13 +57,35 @@ export default function CarnetForm({
   loading,
 }: CarnetFormProps) {
   const { t } = useTranslation();
+  const [expiryDateError, setExpiryDateError] = useState("");
+
+  function validateExpiryDate(value: string) {
+    if (!value) {
+      setExpiryDateError(t("errors.requiredFields"));
+      return false;
+    }
+
+    if (!isValidExpiryDate(value)) {
+      setExpiryDateError(t("errors.invalidExpiryDate"));
+      return false;
+    }
+
+    setExpiryDateError("");
+    return true;
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const expiryDate = formData.get("expiryDate") as string;
+
+    if (!validateExpiryDate(expiryDate)) {
+      return;
+    }
+
     await onSubmit({
       carnetNumber: formData.get("carnetNumber") as string,
-      expiryDate: formData.get("expiryDate") as string,
+      expiryDate,
       ownerName: formData.get("ownerName") as string,
       plateNumber: formData.get("plateNumber") as string,
       vin: formData.get("vin") as string,
@@ -67,7 +97,33 @@ export default function CarnetForm({
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
-      {fields.map(({ name, labelKey, icon: Icon, type, fullWidth }) => (
+      <div>
+        <label className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-700">
+          <FileText className="h-4 w-4 text-brand" />
+          {t("form.carnetNumber")}
+        </label>
+        <input
+          name="carnetNumber"
+          type="text"
+          defaultValue={data.carnetNumber}
+          required
+          className="input-field"
+        />
+      </div>
+
+      <div className="sm:col-span-2">
+        <label className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-700">
+          <Calendar className="h-4 w-4 text-brand" />
+          {t("form.expiryDate")}
+        </label>
+        <ExpiryDateInput
+          defaultValue={data.expiryDate}
+          error={expiryDateError}
+          onBlur={validateExpiryDate}
+        />
+      </div>
+
+      {fields.slice(1).map(({ name, labelKey, icon: Icon, fullWidth }) => (
         <div key={name} className={fullWidth ? "sm:col-span-2" : undefined}>
           <label className="mb-2 flex items-center gap-2 text-sm font-medium text-zinc-700">
             <Icon className="h-4 w-4 text-brand" />
@@ -75,13 +131,14 @@ export default function CarnetForm({
           </label>
           <input
             name={name}
-            type={type ?? "text"}
+            type="text"
             defaultValue={data[name]}
             required
             className="input-field"
           />
         </div>
       ))}
+
       <div className="sm:col-span-2">
         <button
           type="submit"

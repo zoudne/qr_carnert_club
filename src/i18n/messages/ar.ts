@@ -104,6 +104,7 @@ const ar: Messages = {
     vin: "رقم الشاصي (VIN)",
     carType: "نوع السيارة",
     saving: "جاري الحفظ...",
+    expiryDateHint: "اليوم 1–31، الشهر 1–12، السنة {minYear}–{maxYear}",
   },
   table: {
     carnetNumber: "رقم الدفتر",
@@ -124,6 +125,11 @@ const ar: Messages = {
     active: "ساري",
     expired: "منتهي",
   },
+  date: {
+    day: "اليوم",
+    month: "الشهر",
+    year: "السنة",
+  },
   qr: {
     download: "تحميل QR",
     alt: "رمز QR للدفتر {number}",
@@ -141,6 +147,8 @@ const ar: Messages = {
   },
   errors: {
     requiredFields: "يرجى ملء جميع الحقول المطلوبة",
+    invalidExpiryDate:
+      "يرجى إدخال تاريخ صحيح (اليوم 1–31، الشهر 1–12، السنة 2000–2100)",
     duplicateCarnet: "رقم الدفتر مسجل مسبقاً",
     fetchCarnets: "فشل في جلب الدفاتر",
     createCarnet: "فشل في إنشاء الدفتر",

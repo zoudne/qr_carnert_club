@@ -105,6 +105,7 @@ const en: Messages = {
     vin: "VIN (Chassis Number)",
     carType: "Vehicle Type",
     saving: "Saving...",
+    expiryDateHint: "Day 1–31, Month 1–12, Year {minYear}–{maxYear}",
   },
   table: {
     carnetNumber: "Carnet No.",
@@ -125,6 +126,11 @@ const en: Messages = {
     active: "Active",
     expired: "Expired",
   },
+  date: {
+    day: "Day",
+    month: "Month",
+    year: "Year",
+  },
   qr: {
     download: "Download QR",
     alt: "QR code for carnet {number}",
@@ -142,6 +148,8 @@ const en: Messages = {
   },
   errors: {
     requiredFields: "Please fill in all required fields",
+    invalidExpiryDate:
+      "Please enter a valid date (day 1–31, month 1–12, year 2000–2100)",
     duplicateCarnet: "Carnet number already exists",
     fetchCarnets: "Failed to fetch carnets",
     createCarnet: "Failed to create carnet",
